@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+    --color-dark-Green: #031312;
+    --color-medium-Green: #061C1A;
+    --color-light-Green: #142A29;
+    --color-gold-Muted: #B68D67;
+    --color-light-grey: #A1A1A1;
+    
+}
+
+@font-face {
+    font-family: 'Rohesta';
+    src: url('./Assets/Fonts/rohesta.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./Assets/Fonts/Inter_18pt-Bold.ttf') format('TrueType');
+    font-weight: normal;
+    font-style: normal;
+}
+
+  
+@font-face {
+    font-family: 'caughe';
+    src: url('./Assets/Fonts/caughe.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+  
+
+@font-face {
+    font-family: 'Greethen';
+    src: url('./Assets/Fonts/Greethen.ttf') format('TrueType');
+    font-weight: normal;
+    font-style: normal;
+    }
+
+  
+@font-face {
+    font-family: 'InterMed';
+    src: url('./Assets/Fonts/InterMed.ttf') format('TrueType');
+    font-weight: normal;
+    font-style: normal;
+}
