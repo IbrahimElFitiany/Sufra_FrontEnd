@@ -1,13 +1,15 @@
+import { useEffect, useState } from "react";
 import MainLayout from "@layouts/MainLayout";
 import RestaurantCard from "@components/RestaurantCard";
 import CuisineSlider from "@components/CuisineSlider";
+import RestaurantCardSkeleton from "@components/RestaurantCardSkeleton";
 import { getSufraPicks } from "@services/RestaurantServices";
-import { useEffect, useState } from "react";
 import type { RestaurantListDTO } from "@type/RestaurantListDTO";
 
 function HomePage() {
   const [sufraPicks, setSufraPicks] = useState<RestaurantListDTO[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPicks = async () => {
@@ -17,6 +19,9 @@ function HomePage() {
       } catch (err) {
         setError("Failed to fetch Sufra Picks");
         console.error("Failed to fetch Sufra Picks:", error);
+      }
+        finally {
+        setLoading(false);
       }
     };
 
@@ -36,18 +41,20 @@ function HomePage() {
         </h1>
 
         <div id="SufraPicksCardsWrapper" className="mx-auto grid w-[95%] grid-cols-4 gap-x-1.5 md:gap-x-3  lg:gap-x-4 gap-y-2 md:grid-cols-4 lg:grid-cols-4">
-          {sufraPicks.map((restaurant) => (
-            <RestaurantCard
-              key={restaurant.id}
-              id={restaurant.id}
-              name={restaurant.name}
-              cuisine={restaurant.cuisineName}
-              district={restaurant.district}
-              gov={restaurant.gov}
-              rating={restaurant.rating}
-              image={restaurant.img}
-            />
-          ))}
+          {(loading || error)
+            ? Array.from({ length: 4 }).map((_, i) => <RestaurantCardSkeleton key={i} />)
+            : sufraPicks.map((restaurant) => (
+                <RestaurantCard
+                  key={restaurant.id}
+                  id={restaurant.id}
+                  name={restaurant.name}
+                  cuisine={restaurant.cuisineName}
+                  district={restaurant.district}
+                  gov={restaurant.gov}
+                  rating={restaurant.rating}
+                  image={restaurant.img}
+                />
+              ))}
         </div>
         
       </div>
