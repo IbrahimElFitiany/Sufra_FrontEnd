@@ -1,18 +1,11 @@
-import { Link,useNavigate} from 'react-router-dom';
 import { lazy ,Suspense , useState } from 'react';
-import SearchBar from '@components/SearchBar';
+import { Link,useNavigate} from 'react-router-dom';
 import { Menu, Search } from 'lucide-react';
 import { HashLoader } from 'react-spinners';
+
+import SearchBar from '@components/SearchBar';
 const LoginModal = lazy(() => import("@components/modals/LoginModal"));
 
-// //for testing the fallback
-// const LoginModal = lazy(() => {
-//   return new Promise(resolve => {
-//     setTimeout(() => {
-//       resolve(import("@components/modals/LoginModal"));
-//     }, 2000);
-//   });
-// });
 
 function Header() {
 
@@ -22,8 +15,12 @@ function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const OpenModal = () => setIsModalOpen(true);
-  const SearchRestaurants = (query: string) => {
-    navigate(`/search?query=${encodeURIComponent(query)}`);
+  
+  const SearchRestaurants = (query:string, page:number) => {
+    const params = new URLSearchParams();
+    if (query) params.append("query", query);
+    if (page) params.append("page", String(1));
+    navigate(`/search?${params.toString()}`);
   };
 
 

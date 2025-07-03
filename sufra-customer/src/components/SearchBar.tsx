@@ -1,18 +1,18 @@
 import { useState } from "react";
 
-type Props = {
-  onSearch: (query: string) => void;
+
+type SearchBarProps = {
+  onSearch: (query:string , page:number) => void;
 };
 
-function SearchBar({ onSearch }:Props) {
-
-  const [query,setQuery] = useState('');
+function SearchBar({ onSearch }:SearchBarProps) {
+  const [query, setQuery] = useState<string>('');
 
   const handleSearch = async () => {
-    onSearch(query);
+    onSearch(query,1);
   }
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter')  handleSearch();
+    if (e.key === 'Enter')  handleSearch();
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);

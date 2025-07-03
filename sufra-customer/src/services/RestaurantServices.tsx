@@ -1,16 +1,12 @@
 import axios from 'axios';
+import type { SearchRestaurantsProps } from '@type/SearchRestaurantsProps';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-interface SearchOptions {
-  query: string;
-  page?: number;
-  pageSize?: number;
-}
 
-export async function searchRestaurants({ query, page = 1, pageSize = 10 }: SearchOptions) {
+export async function searchRestaurants({query,page,pageSize,districtId,cuisineId}: SearchRestaurantsProps) {
   try {
     const res = await axios.get(`${BASE_URL}/api/restaurant/search`, {
-      params: { query, page, pageSize },
+      params: {query,page,pageSize,cuisineId,districtId},
     });
     return res.data;
   } catch (error) {
