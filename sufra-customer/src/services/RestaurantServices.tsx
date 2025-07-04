@@ -1,11 +1,10 @@
-import axios from 'axios';
+import http from '@services/http';
 import type { SearchRestaurantsProps } from '@type/SearchRestaurantsProps';
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 export async function searchRestaurants({query,page,pageSize,districtId,cuisineId}: SearchRestaurantsProps) {
   try {
-    const res = await axios.get(`${BASE_URL}/api/restaurant/search`, {
+    const res = await http.get(`/restaurant/search`, {
       params: {query,page,pageSize,cuisineId,districtId},
     });
     return res.data;
@@ -17,7 +16,7 @@ export async function searchRestaurants({query,page,pageSize,districtId,cuisineI
 
 export async function getRestaurant(id: number) {
   try {
-    const res = await axios.get(`${BASE_URL}/api/restaurant/${id}`);
+    const res = await http.get(`/restaurant/${id}`);
     return res.data;
   } catch (error) {
     console.error('Failed to fetch cuisines:', error);
@@ -26,6 +25,6 @@ export async function getRestaurant(id: number) {
 }
 
 export async function getSufraPicks(){
-  const res = await axios.get(`${BASE_URL}/api/Restaurant/sufra-picks`);
+  const res = await http.get(`/Restaurant/sufra-picks`);
   return res.data;
 }

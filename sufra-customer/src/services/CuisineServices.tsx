@@ -1,9 +1,8 @@
-import axios from 'axios';
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import http from "@services/http";
 
 export async function getCuisinesDisplay() {
   try {
-    const res = await axios.get(`${BASE_URL}/api/cuisine/with-images`);
+    const res = await http.get(`/cuisine/with-images`);
     return res.data;
   }
   catch (error) {

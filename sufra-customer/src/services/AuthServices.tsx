@@ -1,21 +1,14 @@
-import axios from 'axios';
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import http from "@services/http";
 
 export async function login(email: string, password: string) {
   try {
-    const res = await axios.post(`${BASE_URL}/api/customer/login`, {
-      email,
-      password,
-    });
+    const res = await http.post(`/customer/login`, {email,password});
 
-    if (res.status !== 200) {
-      throw new Error('Login failed');
-    }
-
-    console.log('login successful:', res.data);
+    if (res.status !== 200) throw new Error('Login failed');
+    
     return res.data;
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('login failed:', error);
     return null;
   }
