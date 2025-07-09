@@ -12,7 +12,7 @@ import Filtering from '@components/Filtering';
 
 function SearchResultsPage() {
   const [searchParams , setSearchParams] = useSearchParams();
-  const query = searchParams.get('query');
+  const query = searchParams.get('query') || undefined;
   const page = parseInt(searchParams.get("page")|| "1", 10);
   const cuisineId = parseInt(searchParams.get("cuisineId") || "", 10) || undefined;
   const districtId = parseInt(searchParams.get("districtId") || "", 10) || undefined;
@@ -28,16 +28,6 @@ function SearchResultsPage() {
 
 
   useEffect(() => {
-    if (!query) {
-      setResults([]);
-      setTotalCount(0);
-      setTotalPages(0);
-      setHasNextPage(false);
-      setHasPrevPage(false);
-      setLoading(false);
-      return;
-    }
-
     const fetchResults = async () => {
       try {
         console.log(`fetching from the backend with query: ${query}, page: ${page}, pageSize: ${pageSize}, cuisineId: ${cuisineId}, districtId: ${districtId}`);
@@ -109,7 +99,7 @@ function SearchResultsPage() {
 
               <div id='x total found for search' className="flex flex-col gap-y-0.5">
                 <h1 className='text-xl font-[InterMed] text-[#B68D67]'>
-                  Search Results for <span className='text-[#ffbf8a]'>"{query}"</span>
+                  Search Results for <span className='text-[#ffbf8a]'>"{query || cuisineId}"</span>
                 </h1>
                 <h1 className='text-md font-[InterMed] text-[#838383]'>
                   {totalCount} <span>Restaurant</span>

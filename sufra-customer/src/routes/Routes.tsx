@@ -4,6 +4,7 @@ import HomePage from '@pages/HomePage';
 import SearchResultsPage from '@pages/SearchResultsPage';
 import NotFoundPage from '@pages/NotFoundPage';
 import RestaurantPage from '@pages/RestaurantPage';
+import CartPage from '@pages/CartPage';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
     path: '/restaurant/:id',
     element: <RestaurantPage />,
   },
+  {
+    path: '/cart',
+    element: <CartPage/>,
+  }
 ]);
 
 export { router };

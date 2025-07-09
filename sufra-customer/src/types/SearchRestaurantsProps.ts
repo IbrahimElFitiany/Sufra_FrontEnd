@@ -1,6 +1,6 @@
 
 export type SearchRestaurantsProps = {
-  query: string;
+  query?: string;
   page?: number;
   pageSize?: number;
   districtId?: number;

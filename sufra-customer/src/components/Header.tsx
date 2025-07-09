@@ -8,8 +8,9 @@ const LoginModal = lazy(() => import("@components/modals/LoginModal"));
 
 
 function Header() {
-
   const navigate = useNavigate();
+  const token = localStorage.getItem("accessToken");
+  const isLoggedIn = token? true : false;
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,14 +40,36 @@ function Header() {
       </div>
 
       {/* Desktop Auth Buttons */}
-      <div className="hidden lg:flex space-x-4 font-[caughe] text-xs lg:text-lg">
-        <button onClick={OpenModal} className="rounded-4xl bg-transparent border text-[#A07E5D] border-[#B68D67] px-4 py-2 hover:bg-[#B68D67] hover:text-white transition">
-          Login
-        </button>
-        <button className="rounded-4xl bg-[#B68D67] border border-[#B68D67] px-4 py-2 hover:bg-transparent transition">
-          Register
-        </button>
-      </div>
+      {isLoggedIn ?
+
+       <div id='logged_in' className='hidden lg:flex justify-center items-center space-x-5 font-[Inter] font-medium text-[#B68D67] text-xs lg:text-lg'>
+          <button className='size-8'>
+            <img src="/reservation.png" alt="" />
+          </button>
+          
+          <button className='size-6'>
+            <img src="/notif.png" alt="" />
+          </button>
+
+          <Link to={"/cart"}  className='size-6'>
+            <img src="/cart.png" alt="" />
+          </Link>
+
+          <button className="size-8 bg-amber-50 rounded-full overflow-hidden">
+            <img src="/default.jpg" alt="Profile" className="w-full h-full object-cover" />
+          </button>
+                    
+        </div>
+       :
+        <div className="hidden lg:flex space-x-4 font-[caughe] text-xs lg:text-lg">
+          <button onClick={OpenModal} className="rounded-4xl bg-transparent border text-[#A07E5D] border-[#B68D67] px-4 py-2 hover:bg-[#B68D67] hover:text-white transition">
+            Login
+          </button>
+          <button className="rounded-4xl bg-[#B68D67] border border-[#B68D67] px-4 py-2 hover:bg-transparent transition">
+            Register
+          </button>
+        </div>
+      } 
 
 
       {/* Mobile Icons */}
@@ -73,6 +96,9 @@ function Header() {
           </button>
         </div>
       )}
+
+
+      {/* Login Modal */}
       {isModalOpen && (
         <Suspense fallback={
           <div className="fixed inset-0 z-50 bg-[#000000af] flex items-center justify-center text-white">
@@ -81,6 +107,7 @@ function Header() {
           <LoginModal onClose={() => setIsModalOpen(false)} />
         </Suspense>
       )}
+
     </header>
   );
 }

@@ -26,7 +26,7 @@ function SearchBar({ onSearch }:SearchBarProps) {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="Search restaurants..."
-          className="w-full max-w-md px-1 py-0.5 lg:px-4 lg:py-2 rounded-3xl text-[#B68D67] placeholder-[#B68D67] bg-transparent focus:outline-none"
+          className="w-full px-1 py-0.5 lg:px-4 lg:py-2 rounded-3xl text-[#B68D67] placeholder-[#B68D67] bg-transparent focus:outline-none"
         />
       </div>
   );

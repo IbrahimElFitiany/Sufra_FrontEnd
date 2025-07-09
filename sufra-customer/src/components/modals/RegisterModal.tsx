@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { login } from "@services/AuthServices";
 import { useNavigate } from "react-router-dom";
+
 interface LoginModalProps {
   onClose: () => void;
 }

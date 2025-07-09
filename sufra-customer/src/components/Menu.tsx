@@ -1,18 +1,8 @@
 import { useState } from 'react';
+import type { MenuSection } from '@type/MenuSection';
+import type { MenuItem } from '@type/MenuItem';
+import { addToCart } from '@services/CartServices';
 
-export type MenuItem = {
-  name: string;
-  description: string;
-  price: number;
-  menuItemImg: string;
-};
-
-export type MenuSection = {
-  restaurantId: number;
-  menuSectionId: number;
-  menuSectionName: string;
-  items: MenuItem[];
-};
 type Props = {
   menus: MenuSection[];
 };
@@ -25,6 +15,14 @@ function Menu({ menus }: Props) {
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
+  const onAddToCart = async (item: MenuItem) => {
+    try{
+        await addToCart(item.menuItemId, 1)
+    }
+    catch (error) {
+        console.error('Error adding item to cart:', error);
+    }
+  }
 
   return (
     <div className="flex flex-col items-center mt-10 w-full h-auto mb-7 rounded-s bg-[#061C1A] p-3 text-[#B68D67]">
@@ -98,7 +96,7 @@ function Menu({ menus }: Props) {
                         EGP {item.price}
                       </div>
                       <div className="m-1 flex justify-center items-center bg-[#B68D67] w-8 h-8 rounded-full border-1 border-transparent hover:bg-transparent hover:border-[#B68D67] hover:text-[#B68D67] transition-all duration-300">
-                        <button className="font-serif text-white font-bold text-2xl">+</button>
+                        <button onClick={()=> onAddToCart(item)} className="font-serif text-white font-bold text-2xl">+</button>
                       </div>
                     </div>
                   </div>
