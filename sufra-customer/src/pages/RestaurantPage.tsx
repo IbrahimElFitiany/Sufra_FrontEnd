@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import RestaurantBannerCard from "@components/RestaurantBannerCard";
-import Menu from "@components/Menu";
+import RestaurantBannerCard from "@components/restaurant/RestaurantBannerCard";
+import Menu from "@components/restaurant/Menu";
 import NotFoundPage from "@pages/NotFoundPage";
 import MainLayout from "@layouts/MainLayout";
 

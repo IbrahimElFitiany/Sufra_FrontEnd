@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import type { RestaurantListDTO } from "@type/RestaurantListDTO";
-import RestaurantCardSkeleton from '@components/RestaurantCardSkeleton';
-import RestaurantCard from '@components/RestaurantCard';
-import Pagination from '@components/Pagination';
+import RestaurantCardSkeleton from '@components/restaurant/RestaurantCardSkeleton';
+import RestaurantCard from '@components/restaurant/RestaurantCard';
+import Pagination from '@components/common/Pagination';
 import MainLayout from '@layouts/MainLayout';
 import {searchRestaurants} from '@services/RestaurantServices';
-import Filtering from '@components/Filtering';
+import Filtering from '@components/common/Filtering';
 
 
 function SearchResultsPage() {

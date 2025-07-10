@@ -23,4 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .prettierrc.json
-.env
+
+# Environment files
+.env.*
+!.env.example

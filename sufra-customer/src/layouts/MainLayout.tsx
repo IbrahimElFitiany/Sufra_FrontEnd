@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'; // Add 'type' keyword
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 
 interface MainLayoutProps {
-  children: ReactNode; // Now correctly typed
+  children: ReactNode;
 }
 
 const MainLayout = ({ children }: MainLayoutProps) => (

@@ -57,13 +57,23 @@ function CuisineSlider() {
   return (
     <div className="w-[95%] lg:w-full my-10 gap-x-10 relative">
 
-      <button  id='prev-Arrow' onClick={prevSlide} className="absolute top-[50%] left-3 z-10 lg:left-[-4rem] size-3 lg:size-6 bg-[#B68D67] rotate-45 cursor-pointer transition-colors duration-300 hover:bg-[#DBB28C]"></button>
+      <button 
+        role='button'
+        id='prev-Arrow' 
+        onClick={prevSlide} 
+        className="absolute top-[50%] left-3 z-10 lg:left-[-4rem] size-3 lg:size-6 bg-[#B68D67] rotate-45 cursor-pointer transition-colors duration-300 hover:bg-[#DBB28C]"
+        aria-label="Previous cuisine">
+      </button>
 
       {/* Slider */}
-      {(loading || error) ? 
-        <div className='w-full aspect-[1708/500] md:aspect-[1708/319]  lg:aspect-[1708/319] animate-pulse bg-[#2B3C39] rounded-lg'></div>
-        :
-        <Link to={`/search/?cuisineId=${encodeURIComponent(cuisines[currentSlide].cuisineId)}`} className="py-4 lg:py-12 w-full lg:w-[82%] border-[#B68D67] border-y-1">
+      {loading ? 
+        (<div className='w-full aspect-[1708/500] md:aspect-[1708/319]  lg:aspect-[1708/319] animate-pulse bg-[#2B3C39] rounded-lg'></div>)
+        : error ? 
+        (<div className="w-full aspect-[1708/500] md:aspect-[1708/319] lg:aspect-[1708/319] flex items-center justify-center text-[#DBB28C] text-xl bg-[#2B3C39] rounded-lg">
+          Failed to load cuisines. Please try again later.
+          </div>
+        ):
+        (<Link to={`/search/?cuisineId=${encodeURIComponent(cuisines[currentSlide].cuisineId)}`} className="py-4 lg:py-12 w-full lg:w-[82%] border-[#B68D67] border-y-1">
           <div className="relative flex justify-center items-center aspect-[1708/500] md:aspect-[1708/319]  lg:aspect-[1708/319]">
             {/* Overlay */}
             <div className="absolute inset-0 bg-[rgba(0,0,0,0.49)] rounded-lg"></div>
@@ -84,21 +94,27 @@ function CuisineSlider() {
 
             {/* Indicator Bar */}
             <div className="absolute w-[90%] lg:w-[80%] bottom-2 lg:bottom-5  flex justify-center gap-0.5 lg:gap-2">
-              {cuisines.map((cuisine) => (
+              {cuisines.map((_, index) => (
                 <div
-                  key={cuisine.cuisineId}
+                  key={index}
                   className={`w-10 lg:w-17 h-1 lg:h-2 transition-all duration-300 ${
-                    cuisine.cuisineId === currentSlide ? 'bg-[#DBB28C]' : 'bg-[#9b6d3e]'
+                    index === currentSlide ? 'bg-[#DBB28C]' : 'bg-[#9b6d3e]'
                   }`}
                 ></div>
               ))}
             </div>
           </div>
-        </Link>
-       }
+        </Link>)
+      }
 
 
-      <button role="button" id='next-Arrow' className="absolute top-[50%] right-3 lg:right-[-4rem] size-3 lg:size-6 bg-[#B68D67] rotate-45 cursor-pointer transition-colors duration-300 hover:bg-[#DBB28C]" onClick={nextSlide}></button>
+      <button 
+        role="button"
+        id='next-Arrow'
+        className="absolute top-[50%] right-3 lg:right-[-4rem] size-3 lg:size-6 bg-[#B68D67] rotate-45 cursor-pointer transition-colors duration-300 hover:bg-[#DBB28C]"
+        onClick={nextSlide}
+        aria-label="Next cuisine">
+      </button>
 
     </div>
   );

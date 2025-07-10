@@ -1,29 +1,52 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import {RingLoader} from 'react-spinners';
 
-import HomePage from '@pages/HomePage';
-import SearchResultsPage from '@pages/SearchResultsPage';
-import NotFoundPage from '@pages/NotFoundPage';
-import RestaurantPage from '@pages/RestaurantPage';
-import CartPage from '@pages/CartPage';
+const HomePage = lazy(() => import('@pages/HomePage'));
+const SearchResultsPage = lazy(() => import('@pages/SearchResultsPage'));
+const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
+const RestaurantPage = lazy(() => import('@pages/RestaurantPage'));
+const CartPage = lazy(() => import('@pages/CartPage'));
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <HomePage />,
-    errorElement: <NotFoundPage />,
+    element: (
+      <Suspense fallback={<RingLoader/>}>
+        <HomePage />
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<RingLoader/>}>
+        <NotFoundPage />
+      </Suspense>
+    ),
   },
   {
     path: '/search',
-    element: <SearchResultsPage />,
+    element: (
+      <Suspense fallback={<RingLoader/>}>
+        <SearchResultsPage />
+      </Suspense>
+    ),
   },
   {
     path: '/restaurant/:id',
-    element: <RestaurantPage />,
+    element: (
+      <Suspense fallback={<RingLoader />}>
+        <RestaurantPage />
+      </Suspense>
+    ),
   },
   {
     path: '/cart',
-    element: <CartPage/>,
-  }
+    element: (
+      <Suspense fallback={<RingLoader/>}>
+        <CartPage />
+      </Suspense>
+    ),
+  },
 ]);
+
 
 export { router };

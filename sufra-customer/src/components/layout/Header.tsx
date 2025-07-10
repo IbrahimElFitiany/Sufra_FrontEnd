@@ -3,8 +3,8 @@ import { Link,useNavigate} from 'react-router-dom';
 import { Menu, Search } from 'lucide-react';
 import { HashLoader } from 'react-spinners';
 
-import SearchBar from '@components/SearchBar';
-const LoginModal = lazy(() => import("@components/modals/LoginModal"));
+import SearchBar from '@components/common/SearchBar';
+const LoginModal = lazy(() => import("@components/auth/LoginModal"));
 
 
 function Header() {

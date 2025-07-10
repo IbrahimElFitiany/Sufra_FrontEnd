@@ -16,13 +16,38 @@ http.interceptors.request.use((config) => {
   return config;
 });
 
+
+type FailedRequest = {
+  resolve: (token: string) => void;
+  reject: (err: any) => void;
+};
+
+let isRefreshing = false;
+let failedQueue: FailedRequest[] = [];
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token!);
+    }
+  });
+
+  failedQueue = [];
+};
+
+
 http.interceptors.response.use((response: AxiosResponse) => response, async (error: AxiosError) => 
   {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }; //original request == old request + a retry field to prevent infinite retrying
 
+    //if the user is unauth(401) and it's the first time for the request to hit 401 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      //check if any request is already refreshing the token
       if (isRefreshing) {
+        // If a refresh token request is already in progress, queue this request
         return new Promise((resolve, reject) => {
+
           failedQueue.push({
             resolve: (token: string) => {
               originalRequest.headers = {
@@ -32,21 +57,21 @@ http.interceptors.response.use((response: AxiosResponse) => response, async (err
               resolve(http(originalRequest));
             },
             reject: (err) => {
-              localStorage.removeItem("accessToken");
               reject(err);
             },
           });
         });
       }
 
-      originalRequest._retry = true;
-      isRefreshing = true;
+      // If this is the first request that triggers token refresh
+      originalRequest._retry = true; //mark it as that it tried
+      isRefreshing = true; 
 
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
           {},
-          { withCredentials: true }
+          { withCredentials: true } //for sending cookies
         );
 
         const newAccessToken = response.data.accessToken;
@@ -59,10 +84,14 @@ http.interceptors.response.use((response: AxiosResponse) => response, async (err
         };
 
         return http(originalRequest);
-      } catch (refreshError) {
-        // ❌ Refresh failed — clean up and force logout behavior
+      } 
+      catch (refreshError) {
+        //if refreshing token failed, I will reject all the requests in the queue
+        //and remove the access token from local storage
+        //and call the logout function
         localStorage.removeItem("accessToken");
         processQueue(refreshError, null);
+        http("/auth/logout")
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -72,26 +101,9 @@ http.interceptors.response.use((response: AxiosResponse) => response, async (err
   }
 );
 
-let isRefreshing = false;
 
-type FailedRequest = {
-  resolve: (token: string) => void;
-  reject: (err: any) => void;
-};
 
-let failedQueue: FailedRequest[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token!);
-    }
-  });
-
-  failedQueue = [];
-};
 
 
 

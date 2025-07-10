@@ -6,26 +6,29 @@ interface LoginModalProps {
 }
 
 function LoginModal({ onClose }: LoginModalProps) {
+
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await login(email, password);
+      const loginResponse = await login(email, password);
       localStorage.setItem("user", JSON.stringify({
-        email: response.email,
-        fname: response.fname,
-        lname: response.lname,
-        role: response.roleforTesting
+        email: loginResponse.email,
+        fname: loginResponse.fname,
+        lname: loginResponse.lname,
+        role: loginResponse.roleforTesting
       }));
-      localStorage.setItem("accessToken", response.accessToken);
       onClose();
       navigate("/");
-    } catch (err) {
+    } 
+    catch (err: any) {
       console.error("Login failed", err);
+      setError("Something went wrong. Please try again later.");
     }
   };
 
@@ -33,8 +36,10 @@ function LoginModal({ onClose }: LoginModalProps) {
     <div className="fixed inset-0 bg-[#000000af] z-50 flex justify-center items-center">
       
       <div id="loginModal"className="flex flex-col items-center bg-[#061C1A] p-6 rounded-md max-w-xs lg:max-w-md w-full border border-[#B68D67]">
-        <button onClick={onClose} className="absolute top-4 right-4 text-white text-xl font-bold hover:text-[#e0bfa1] focus:outline-none">
-        ×
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 text-white text-xl font-bold hover:text-[#e0bfa1] focus:outline-none">
+          ×
         </button>
         <img
           id="sufraLogo"
@@ -74,6 +79,12 @@ function LoginModal({ onClose }: LoginModalProps) {
           >
             Login
           </button>
+
+          {error && (
+            <div className="mt-5 text-red-500 text-sm text-center">
+              {error}
+            </div>
+          )}
         </form>
 
       </div>
