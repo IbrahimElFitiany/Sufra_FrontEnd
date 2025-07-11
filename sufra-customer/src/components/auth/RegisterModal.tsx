@@ -1,48 +1,152 @@
-import { useState } from "react";
-import { login } from "@services/AuthServices";
+import {useState, useEffect, useRef} from "react";
+import {register } from "@services/AuthServices";
 import { useNavigate } from "react-router-dom";
 
-interface LoginModalProps {
+interface RegisterModalProps {
   onClose: () => void;
 }
 
-function LoginModal({ onClose }: LoginModalProps) {
+function RegisterModal({ onClose }: RegisterModalProps) {
+  
   const navigate = useNavigate();
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [error,setError] = useState<string>("")
+  const [fname,setFname] = useState<string>("");
+  const [lname,setLname] = useState<string>("");
+  const [email,setEmail] = useState<string>("");
+  const [password,setPassword] = useState<string>("");
+  const [phone,setPhone] = useState<string>("");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await login(email, password);
-      localStorage.setItem("user", JSON.stringify({
-        email: response.email,
-        fname: response.fname,
-        lname: response.lname,
-        role: response.roleforTesting
-      }));
-      localStorage.setItem("accessToken", response.accessToken);
+      await register({fname,lname,email,password,phone})
       onClose();
       navigate("/");
-    } catch (err) {
-      console.error("Login failed", err);
+    } 
+    catch (error: any) {
+      if (error.response?.data?.message === `Email: ${email} is already in use.`) {
+        setError("Email already exists. Please use another one.");
+      } 
+      else if (error.response?.data?.message === `Number: ${phone} is already in use.`) {
+        setError("Number is already in use.");
+      } 
+      else {
+        setError("Registration failed. Please try again.");
+      }
     }
-  };
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      //check if modalref is mounted and the event is outside the modal
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown",handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown",handleEscape);
+    };
+  }, [onClose]);
 
   return (
     <div className="fixed inset-0 bg-[#000000af] z-50 flex justify-center items-center">
       
-      <div id="loginModal"className="flex flex-col items-center bg-[#061C1A] p-6 rounded-md max-w-xs lg:max-w-md w-full border border-[#B68D67]">
-        <button onClick={onClose} className="absolute top-4 right-4 text-white text-xl font-bold hover:text-[#e0bfa1] focus:outline-none">
-        ×
-        </button>
+      <div 
+        id="registerModal"
+        ref={modalRef}
+        className="flex flex-col items-center bg-[#061C1A] p-6 rounded-md max-w-xs lg:max-w-md w-full border border-[#B68D67]"
+      >
+        <button id="close_button" onClick={onClose} className="absolute top-4 right-4 text-white text-xl font-bold hover:text-[#e0bfa1] focus:outline-none"> × </button>
         <img
           id="sufraLogo"
           src="/sufraLogo.png"
           alt="Welcome to Sufra"
           className="w-[70%] mb-12 border-b border-gold-Muted"
         />
+
+        <form id="Form" onSubmit={handleRegister} className="w-full text-[#B68D67] text-sm lg:text-base">
+          {/* First Name */}
+          <input
+            type="text"
+            value={fname}
+            onChange={(e) => setFname(e.target.value)}
+            className={`w-full px-3 p-2 my-2 rounded-full border ${
+              !fname && error ? 'border-red-500' : 'border-[#B68D67]'
+            } bg-transparent placeholder:text-[#B68D67] focus:outline-none focus:ring-[#B68D67]`}
+            placeholder="First Name"
+          />
+          {!fname && error && <p className="text-red-500 text-xs pl-2">First name is required</p>}
+
+          {/* Last Name */}
+          <input
+            type="text"
+            value={lname}
+            onChange={(e) => setLname(e.target.value)}
+            className={`w-full px-3 p-2 my-2 rounded-full border ${
+              !lname && error ? 'border-red-500' : 'border-[#B68D67]'
+            } bg-transparent placeholder:text-[#B68D67] focus:outline-none focus:ring-[#B68D67]`}
+            placeholder="Last Name"
+          />
+          {!lname && error && <p className="text-red-500 text-xs pl-2">Last name is required</p>}
+
+          {/* Email */}
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={`w-full px-3 p-2 my-2 rounded-full border ${
+              !email && error ? 'border-red-500' : 'border-[#B68D67]'
+            } bg-transparent placeholder:text-[#B68D67] focus:outline-none focus:ring-[#B68D67]`}
+            placeholder="Email"
+          />
+          {!email && error && <p className="text-red-500 text-xs pl-2">Email is required</p>}
+
+          {/* Password */}
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`w-full px-3 p-2 my-2 rounded-full border ${
+              !password && error ? 'border-red-500' : 'border-[#B68D67]'
+            } bg-transparent placeholder:text-[#B68D67] focus:outline-none focus:ring-[#B68D67]`}
+            placeholder="Password"
+          />
+          {!password && error && <p className="text-red-500 text-xs pl-2">Password is required</p>}
+
+          {/* Phone */}
+          <input
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className={`w-full px-3 p-2 my-2 rounded-full border ${
+              !phone && error ? 'border-red-500' : 'border-[#B68D67]'
+            } bg-transparent placeholder:text-[#B68D67] focus:outline-none focus:ring-[#B68D67]`}
+            placeholder="Phone"
+          />
+          {!phone && error && <p className="text-red-500 text-xs pl-2">Phone number is required</p>}
+
+          {/* Error Message */}
+          {error && (
+            <p className="text-red-500 text-xs mt-2 pl-2">{error}</p>
+          )}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-[#B68D67] text-white font-bold p-2 rounded-full hover:bg-[#a77b4f] transition mt-4"
+          >
+            Register
+          </button>
+        </form>
+
 
         <div id="welcome&SignUp" className="w-full text-left my-3 text-sm lg:text-base text-light-grey font-[caughe]">
           <h1 className="text-white text-lg lg:text-xl mb-1">Welcome back</h1>
@@ -54,32 +158,10 @@ function LoginModal({ onClose }: LoginModalProps) {
           </p>
         </div>
 
-        <form id="email&Pass" onSubmit={handleLogin} className="w-full text-[#B68D67] text-sm lg:text-base">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 p-2 my-2 rounded-full border border-[#B68D67] bg-transparent placeholder:text-[#B68D67] focus:outline-none  focus:ring-[#B68D67]"
-            placeholder="Email"
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 p-2 my-2 rounded-full border border-[#B68D67] bg-transparent placeholder:text-[#B68D67]  focus:outline-none  focus:ring-[#B68D67]"
-            placeholder="Password"
-          />
-          <button
-            type="submit"
-            className="w-full bg-[#B68D67] text-white font-bold p-2 rounded-full hover:bg-[#a77b4f] transition mt-4"
-          >
-            Login
-          </button>
-        </form>
 
       </div>
     </div>
   );
 }
 
-export default LoginModal;
+export default RegisterModal;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect,useRef} from "react";
 import { login } from "@services/AuthServices";
 import { useNavigate } from "react-router-dom";
 interface LoginModalProps {
@@ -12,30 +12,76 @@ function LoginModal({ onClose }: LoginModalProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    if(loading) return;
     e.preventDefault();
+
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 3) {
+      setError("Password must be at least 3 characters long.");
+      return;
+    }
+
     try {
-      const loginResponse = await login(email, password);
-      localStorage.setItem("user", JSON.stringify({
-        email: loginResponse.email,
-        fname: loginResponse.fname,
-        lname: loginResponse.lname,
-        role: loginResponse.roleforTesting
-      }));
+      setLoading(true);
+      await login(email, password);
       onClose();
       navigate("/");
     } 
     catch (err: any) {
       console.error("Login failed", err);
-      setError("Something went wrong. Please try again later.");
+      if (err.response?.status === 401) {
+        console.log(err.response.data.message)
+        setError(err.response?.data?.message || "Something went wrong.");
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
     }
   };
+  
+  useEffect(() => {
+
+    const handleClickOutside = (event: MouseEvent) => {
+      //check if modalref is mounted and the event is outside the modal
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown",handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown",handleEscape);
+    };
+  }, [onClose]);
+
 
   return (
     <div className="fixed inset-0 bg-[#000000af] z-50 flex justify-center items-center">
       
-      <div id="loginModal"className="flex flex-col items-center bg-[#061C1A] p-6 rounded-md max-w-xs lg:max-w-md w-full border border-[#B68D67]">
+      <div 
+        id="loginModal"
+        className="flex flex-col items-center bg-[#061C1A] p-6 rounded-md max-w-xs lg:max-w-md w-full border border-[#B68D67]"
+        ref={modalRef}
+      >
         <button 
           onClick={onClose}
           className="absolute top-4 right-4 text-white text-xl font-bold hover:text-[#e0bfa1] focus:outline-none">
@@ -65,6 +111,7 @@ function LoginModal({ onClose }: LoginModalProps) {
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-3 p-2 my-2 rounded-full border border-[#B68D67] bg-transparent placeholder:text-[#B68D67] focus:outline-none  focus:ring-[#B68D67]"
             placeholder="Email"
+            autoComplete="username"
           />
           <input
             type="password"
@@ -72,6 +119,7 @@ function LoginModal({ onClose }: LoginModalProps) {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 p-2 my-2 rounded-full border border-[#B68D67] bg-transparent placeholder:text-[#B68D67]  focus:outline-none  focus:ring-[#B68D67]"
             placeholder="Password"
+            autoComplete="current-password"
           />
           <button
             type="submit"

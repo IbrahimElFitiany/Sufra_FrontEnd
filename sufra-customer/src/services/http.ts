@@ -41,6 +41,10 @@ http.interceptors.response.use((response: AxiosResponse) => response, async (err
   {
     const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }; //original request == old request + a retry field to prevent infinite retrying
 
+    if (originalRequest.url?.includes("/auth/login")) {
+      return Promise.reject(error);
+    }
+    
     //if the user is unauth(401) and it's the first time for the request to hit 401 
     if (error.response?.status === 401 && !originalRequest._retry) {
       //check if any request is already refreshing the token
@@ -91,7 +95,7 @@ http.interceptors.response.use((response: AxiosResponse) => response, async (err
         //and call the logout function
         localStorage.removeItem("accessToken");
         processQueue(refreshError, null);
-        http("/auth/logout")
+        http.post("/auth/logout")
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

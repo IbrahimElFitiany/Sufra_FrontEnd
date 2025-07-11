@@ -1,6 +1,6 @@
 import StarRatings from "react-star-ratings";
 import type { FC } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 interface RestaurantCardProps {
@@ -14,7 +14,8 @@ interface RestaurantCardProps {
 }
 
 const RestaurantCard: FC<RestaurantCardProps> = ({id,name,cuisine,rating,district,gov,image,}) => {
-
+  
+  const navigate = useNavigate();
   const [starSize, setStarSize] = useState(getStarSize(window.innerWidth));
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const RestaurantCard: FC<RestaurantCardProps> = ({id,name,cuisine,rating,distric
 
 
   return (
-    <Link  to={`/restaurant/${id}`}>
+    <div onClick={() => navigate(`/restaurant/${id}`)}>
       <div className="mx-auto aspect-[388/400] flex flex-col items-center bg-[#142A29] shadow-lg rounded-sm lg:rounded-md">
 
         {/*Restaurant Image*/}
@@ -65,7 +66,7 @@ const RestaurantCard: FC<RestaurantCardProps> = ({id,name,cuisine,rating,distric
         </div>
 
       </div>
-    </Link>
+    </div>
   );
 };
 
