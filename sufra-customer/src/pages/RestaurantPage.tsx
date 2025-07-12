@@ -7,8 +7,6 @@ import NotFoundPage from "@pages/NotFoundPage";
 import MainLayout from "@layouts/MainLayout";
 
 import type { RestaurantDetailDTO } from "@type/RestaurantDetailDTO";
-import type { MenuItem } from "@type/MenuItem";
-import type { MenuSection } from "@type/MenuSection";
 import { getRestaurant } from "@services/RestaurantServices";
 
 function RestaurantPage() {
@@ -44,7 +42,7 @@ function RestaurantPage() {
         <MainLayout>
           <div
             id="test"
-            className="flex w-[100%] flex-col items-center justify-center"
+            className="flex w-full flex-col items-center justify-center"
           >
             <RestaurantBannerCard restaurant={restaurant} />
             <Menu menus={restaurant?.menus || []} />

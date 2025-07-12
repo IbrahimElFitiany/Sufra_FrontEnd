@@ -13,7 +13,7 @@ function CuisineSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [allImagesLoaded, setAllImagesLoaded] = useState(false);
+  const [, setAllImagesLoaded] = useState(false);
 
   useEffect(() => {
     const fetchAndPreload = async () => {

@@ -27,7 +27,7 @@ const RestaurantCard: FC<RestaurantCardProps> = ({id,name,cuisine,rating,distric
 
 
   return (
-    <div onClick={() => navigate(`/restaurant/${id}`)}>
+    <div className="cursor-pointer transform transition-transform duration-200 hover:scale-101" onClick={() => navigate(`/restaurant/${id}`)}>
       <div className="mx-auto aspect-[388/400] flex flex-col items-center bg-[#142A29] shadow-lg rounded-sm lg:rounded-md">
 
         {/*Restaurant Image*/}

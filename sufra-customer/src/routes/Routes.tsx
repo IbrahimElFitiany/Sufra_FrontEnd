@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import {RingLoader} from 'react-spinners';
+import {HashLoader , RingLoader} from 'react-spinners';
 
 const HomePage = lazy(() => import('@pages/HomePage'));
 const SearchResultsPage = lazy(() => import('@pages/SearchResultsPage'));
@@ -12,7 +12,10 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <Suspense fallback={<RingLoader/>}>
+      <Suspense fallback={ 
+          <div className="fixed inset-0 z-50 bg-[#000000af] flex items-center justify-center text-white">
+            <HashLoader color="#B68D67" size={50} />
+          </div>}>
         <HomePage />
       </Suspense>
     ),

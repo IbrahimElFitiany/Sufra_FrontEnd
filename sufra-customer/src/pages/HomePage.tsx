@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import MainLayout from "@layouts/MainLayout";
-import CuisineSlider from "@components/CuisineSlider";
-import SufraPicks from "@components/SufraPicks";
+import CuisineSlider from "@components/home/CuisineSlider";
+import SufraPicks from "@components/home/SufraPicks";
 import { getSufraPicks } from "@services/RestaurantServices";
 import type { RestaurantListDTO } from "@type/RestaurantListDTO";
 

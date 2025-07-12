@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { createReservation } from '@services/ReservationServices'
+import { useParams } from 'react-router-dom';
 
 const generateTimeOptions = () => {
   const times = [];
@@ -29,7 +31,34 @@ const getNearestHalfHour = () => {
 const BookATable = () => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [partySize, setPartySize] = useState<number>(1);
   const timeOptions = generateTimeOptions();
+  const { id } = useParams();
+  const parsedId = parseInt(id || "", 10);
+  if (isNaN(parsedId)) {
+    alert("Invalid restaurant ID.");
+    return;
+  }
+
+  const handleReservation = async () => {
+    try {
+      const [hour, minute] = time.split(":");
+      const reservationDateTime = new Date(date);
+      reservationDateTime.setHours(parseInt(hour), parseInt(minute));
+
+      const reservationPayload = {
+        StartTime: reservationDateTime.toISOString(),
+        PartySize: partySize
+      };
+
+      await createReservation(parsedId, reservationPayload);
+      alert("Reservation successful!");
+    } catch (err) {
+      console.error("Reservation failed", err);
+      alert("Something went wrong!");
+    }
+  };
+
 
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
@@ -38,12 +67,14 @@ const BookATable = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center bg-transparent border-1 h-[100%] w-sm border-[#B68D67] mt-4 px-4 py-2 rounded-lg">
+    <div className="mb-3 flex flex-col justify-center items-center bg-transparent border-1 h-full lg:w-sm border-[#B68D67] m-0 mt-4 px-4 py-2 rounded-lg">
       <div id="title" className="font-bold">BOOK A TABLE</div>
 
       <select
         id="dropdown"
         name="options"
+        value={partySize}
+        onChange={(e) => setPartySize(Number(e.target.value))}
         className="w-[100%] my-2 p-1 border-1 rounded-lg"
       >
         {Array.from({ length: 20 }, (_, i) => (
@@ -75,7 +106,9 @@ const BookATable = () => {
         </select>
       </div>
 
-      <button className="my-2 w-[100%] h-8 bg-[#B68D67] text-white font-bold rounded-lg">
+      <button
+        onClick={handleReservation} 
+        className="my-2 w-[100%] h-8 bg-[#B68D67] text-white font-bold rounded-lg">
         Confirm
       </button>
     </div>

@@ -135,7 +135,6 @@ function SearchResultsPage() {
             </div>
         </div>
         <Pagination currentPage={page} totalPages={totalPages} onNext={handleOnNext} onPrev={handleOnPrev} onPageChange={handleOnPageChange} hasNextPage={hasNextPage} hasPrevPage={hasPrevPage}/>
-
     </MainLayout>
   );
 }
