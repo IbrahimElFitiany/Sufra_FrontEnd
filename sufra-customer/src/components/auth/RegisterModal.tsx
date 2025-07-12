@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 
 interface RegisterModalProps {
   onClose: () => void;
+  onSwitch: ()=> void;
 }
 
-function RegisterModal({ onClose }: RegisterModalProps) {
+function RegisterModal({ onClose,onSwitch }: RegisterModalProps) {
   
   const navigate = useNavigate();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -17,9 +18,19 @@ function RegisterModal({ onClose }: RegisterModalProps) {
   const [password,setPassword] = useState<string>("");
   const [phone,setPhone] = useState<string>("");
 
+  const [loading,setLoading] = useState<boolean>(false)
+
   const handleRegister = async (e:React.FormEvent<HTMLFormElement>) => {
+    if(loading) return;
+
     e.preventDefault();
+    
+    if (!fname || !lname || !email || !password || !phone) {
+      setError("All fields are required.");
+      return;
+    }
     try {
+      setLoading(true);
       await register({fname,lname,email,password,phone})
       onClose();
       navigate("/");
@@ -34,6 +45,9 @@ function RegisterModal({ onClose }: RegisterModalProps) {
       else {
         setError("Registration failed. Please try again.");
       }
+    }
+    finally{
+      setLoading(false);
     }
   }
 
@@ -75,6 +89,7 @@ function RegisterModal({ onClose }: RegisterModalProps) {
         <form id="Form" onSubmit={handleRegister} className="w-full text-[#B68D67] text-sm lg:text-base">
           {/* First Name */}
           <input
+            autoFocus
             type="text"
             value={fname}
             onChange={(e) => setFname(e.target.value)}
@@ -148,12 +163,14 @@ function RegisterModal({ onClose }: RegisterModalProps) {
         </form>
 
 
-        <div id="welcome&SignUp" className="w-full text-left my-3 text-sm lg:text-base text-light-grey font-[caughe]">
-          <h1 className="text-white text-lg lg:text-xl mb-1">Welcome back</h1>
+        <div className=" w-full text-center  my-3 text-sm lg:text-base text-gray-300 font-sans">
           <p className="text-[#B68D67] text-xs lg:text-sm">
-            New to Sufra?{" "}
-            <span className="cursor-pointer underline hover:text-[#e0bfa1]">
-              Sign up
+            Already have an account?{" "}
+            <span
+              className="cursor-pointer underline hover:text-[#e0bfa1]"
+              onClick={onSwitch}
+            >
+              Log in
             </span>
           </p>
         </div>

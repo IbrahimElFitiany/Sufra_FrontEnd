@@ -3,14 +3,16 @@ import { login } from "@services/AuthServices";
 import { useNavigate } from "react-router-dom";
 interface LoginModalProps {
   onClose: () => void;
+  onSwitch: () => void;
 }
 
-function LoginModal({ onClose }: LoginModalProps) {
+function LoginModal({ onClose , onSwitch }: LoginModalProps) {
 
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -50,6 +52,8 @@ function LoginModal({ onClose }: LoginModalProps) {
       } else {
         setError("Something went wrong. Please try again later.");
       }
+    } finally{
+        setLoading(false);
     }
   };
   
@@ -94,18 +98,13 @@ function LoginModal({ onClose }: LoginModalProps) {
           className="w-[70%] mb-12 border-b border-gold-Muted"
         />
 
-        <div id="welcome&SignUp" className="w-full text-left my-3 text-sm lg:text-base text-light-grey font-[caughe]">
+        <div id="welcome" className="w-full text-center my-3 text-sm lg:text-base text-light-grey font-[Rohesta]">
           <h1 className="text-white text-lg lg:text-xl mb-1">Welcome back</h1>
-          <p className="text-[#B68D67] text-xs lg:text-sm">
-            New to Sufra?{" "}
-            <span className="cursor-pointer underline hover:text-[#e0bfa1]">
-              Sign up
-            </span>
-          </p>
         </div>
 
         <form id="email&Pass" onSubmit={handleLogin} className="w-full text-[#B68D67] text-sm lg:text-base">
           <input
+            autoFocus
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -134,6 +133,15 @@ function LoginModal({ onClose }: LoginModalProps) {
             </div>
           )}
         </form>
+
+        <p className="mt-7 text-[#B68D67] text-xs lg:text-sm">
+          New to Sufra?{" "}
+          <span 
+            onClick={onSwitch}
+            className="cursor-pointer underline hover:text-[#e0bfa1]">
+            Sign up
+          </span>
+        </p>
 
       </div>
     </div>
