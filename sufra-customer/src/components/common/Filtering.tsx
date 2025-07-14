@@ -1,15 +1,7 @@
-import { useState } from "react";
-
-interface FilteringProps {
-    titles: string[];
-    subtitles: string[];
-
-
-}
 
 function Filtering() {
 
-    const [cuisines, setCuisines] = useState<string[]>(["French","Egyptian","Italian","Chinese","Japanese","Indian","Mexican","American"]);
+    const cuisines = ["French","Egyptian","Italian","Chinese","Japanese","Indian","Mexican","American"]
             
     return (
                 <div id='Filtering' className="rounded-md flex flex-col bg-[#142A29] h-[500px] min-w-[100px] sm:min-w-[150px] lg:min-w-[200px] lg:max-w-[200px] text-amber-50">
