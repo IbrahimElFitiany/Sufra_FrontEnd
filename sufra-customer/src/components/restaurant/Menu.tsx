@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { MenuSection } from '@type/MenuSection';
 import type { MenuItem } from '@type/MenuItem';
 import { addToCart } from '@services/CartServices';
+import SearchBar from '@components/common/SearchBar';
 
 type Props = {
   menus: MenuSection[];
@@ -35,15 +36,12 @@ function Menu({ menus }: Props) {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="flex items-center w-[70%] mx-6 border border-[#B68D67] rounded-lg px-4">
-        <img src="/search.png" className="size-4" alt="search" />
-        <input
-          type="text"
-          placeholder="Search menu for a particular dish..."
-          className="font-[Inter] w-full px-3 py-2 rounded-xl text-[#B68D67] placeholder-[#B68D67] bg-transparent focus:outline-none"
-        />
-      </div>
+      <SearchBar 
+        onSearch={()=>{console.log("test")}} 
+        placeholder='Search menu for a particular dish...'
+        classname='flex gap-x-1 md:gap-x-0 font-semibold items-center justify-center w-[70%] mx-6 border border-[#B68D67] rounded-lg'
+      />
+
 
       {/* Menu Sections and Items */}
       <div className="flex w-[90%] my-6 p-1.5 gap-x-1">

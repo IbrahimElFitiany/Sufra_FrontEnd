@@ -40,7 +40,7 @@ function Header(){
       </Link>
 
       <div id='searchBar' className="lg:block w-full">
-        <SearchBar onSearch={SearchRestaurants} />
+        <SearchBar onSearch={SearchRestaurants} placeholder='Search restaurants'/>
       </div>
 
       {isLoggedIn ?
