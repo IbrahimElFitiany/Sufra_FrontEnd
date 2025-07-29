@@ -59,7 +59,6 @@ const BookATable = () => {
     }
   };
 
-
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
     setDate(today);
@@ -67,7 +66,7 @@ const BookATable = () => {
   }, []);
 
   return (
-    <div className="mb-3 flex flex-col justify-center items-center bg-transparent border-1 h-full lg:w-sm border-[#B68D67] m-0 mt-4 px-4 py-2 rounded-lg">
+    <div className="mb-3 flex flex-col justify-center items-center bg-transparent border-1 lg:w-sm border-[#B68D67] m-0 mt-4 px-4 py-2 rounded-lg">
       <div id="title" className="font-bold">BOOK A TABLE</div>
 
       <select

@@ -27,3 +27,13 @@ export async function getCartItems() {
     return null;
   }
 }
+
+export async function clearCart() {
+  try {
+    const res = await http.delete("/cart");
+    return res.data;
+  } catch (error) {
+    console.error("Failed to clear cart:", error);
+    throw error;
+  }
+}

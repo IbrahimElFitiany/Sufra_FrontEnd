@@ -2,10 +2,12 @@ import { useState } from "react";
 
 
 type SearchBarProps = {
-  onSearch: (query:string , page:number) => void;
+  onSearch:(query:string , page:number) => void
+  placeholder:string
+  classname?: string;
 };
 
-function SearchBar({ onSearch }:SearchBarProps) {
+function SearchBar({ onSearch,placeholder,classname}:SearchBarProps) {
   const [query, setQuery] = useState<string>('');
 
   const handleSearch = async () => {
@@ -19,14 +21,15 @@ function SearchBar({ onSearch }:SearchBarProps) {
   };
 
   return (
-      <div id="SearchBar" className="text-sm lg:text-lg flex-1 mx-4 lg:mx-8 border border-[#B68D67] rounded-3xl">
+      <div id="SearchBar" className={classname? classname:`flex justify-center items-center text-sm lg:text-lg flex-1 mx-4 lg:mx-8 border border-[#B68D67] rounded-full`}>
+        <img src="/search.png" alt="" className="mx-2 size-3 md:mx-4 md:size-5" />
         <input
           type="text"
           value={query}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder="Search restaurants..."
-          className="w-full px-3 py-0.5 lg:px-4 lg:py-2 rounded-3xl text-[#B68D67] placeholder-[#B68D67] bg-transparent focus:outline-none"
+          placeholder={placeholder}
+          className="truncate w-full py-0.5 md:py-2  text-[#B68D67] placeholder-[#B68D67] bg-transparent focus:outline-none"
         />
       </div>
   );
