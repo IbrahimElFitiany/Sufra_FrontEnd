@@ -9,7 +9,7 @@ function MenuItemCard({ menuItem, onAdd }: Props) {
   return (
     <div className="flex justify-between border-1 border-[#d5cbec28] rounded-lg">
       <div id="ImageAndDetails" className="flex">
-        <div id="Image" className="shrink-0 w-10 h-10 md:w-36 md:h-36 rounded-l-lg  overflow-hidden">
+        <div id="Image" className="shrink-0 w-20 h-20 md:w-36 md:h-36 rounded-l-lg  overflow-hidden">
           <img
             src={menuItem.menuItemImg}
             alt={menuItem.name}
@@ -17,8 +17,8 @@ function MenuItemCard({ menuItem, onAdd }: Props) {
           />
         </div>
 
-        <div id="MenuItemDetails" className="flex flex-col px-3 py-1">
-          <h3 className="line-clamp-3 text-xs md:text-2xl font-[Rohesta] text-[#B68D67] truncate overflow-hidden whitespace-nowrap">
+        <div id="MenuItemDetails" className="flex flex-col px-2 md:px-3 py-1">
+          <h3 className="text-sm md:text-xl font-[Rohesta] text-[#B68D67] line-clamp-1">
             {menuItem.name}
           </h3>
           <p className="line-clamp-3 text-xs md:text-lg font-[450] text-[#BCBCBC]">
@@ -26,15 +26,15 @@ function MenuItemCard({ menuItem, onAdd }: Props) {
           </p>
         </div>
       </div>
-      <div id="PriceAndAdd" className="flex flex-col justify-around mx-5 items-end">
-        <span className="text-[#B68D67] font-bold text-xl truncate overflow-hidden whitespace-nowrap">
+      <div id="PriceAndAdd" className="flex flex-col justify-around mx-3 md:mx-5 items-end">
+        <span className="text-[#B68D67] font-bold text-sm md:text-xl truncate overflow-hidden whitespace-nowrap">
           {menuItem.price} EGP
         </span>
         <button
           onClick={() => onAdd(menuItem)}
-          className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-[#B68D67] hover:brightness-125 transition duration-200 text-white text-sm "
+          className="w-5 h-5 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-[#B68D67] hover:brightness-125 transition duration-200 text-white text-sm "
         >
-          <img className="size-5" src="/add.png" alt="" />
+          <img className="size-3 md:size-5" src="/add.png" alt="" />
         </button>
       </div>
     </div>
