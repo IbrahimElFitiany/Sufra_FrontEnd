@@ -11,9 +11,9 @@ export async function register(params:CustomerRegisteration) {
   }
 }
 
-export async function login(email: string, password: string) {
+export async function login(email: string, password: string , userType:string = "customer") {
   try {
-    const loginResponse = await http.post("/auth/login", { email, password });
+    const loginResponse = await http.post("/auth/login", { email, password,userType});
 
     const user = {
       email: loginResponse.data.email,
