@@ -1,0 +1,16 @@
+{
+  "name": "sufra-customer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "mapbox-gl": "^3.13.0",
+    "react-star-ratings": "^2.3.0"
+  }
+}
