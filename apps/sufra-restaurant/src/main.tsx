@@ -1,8 +1,7 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 
-import RestaurantRegistration from '@pages/RestaurantRegistrationPage'
+import LandingPage from '@pages/LandingPage'
 createRoot(document.getElementById('root')!).render(
-    <RestaurantRegistration />
+    <LandingPage />
 )
