@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "pnpm -r --filter './apps/**' run dev",
     "build": "pnpm -r --filter './apps/**' run build",
-    "lint": "pnpm -r --filter './apps/**' run lint"
+    "lint": "pnpm -r --filter './apps/**' run lint",
+
+    "dev:admin": "pnpm --filter sufra-admin run dev",
+    "dev:customer": "pnpm --filter sufra-customer run dev",
+    "dev:restaurant": "pnpm --filter sufra-restaurant run dev"
   },
   "dependencies": {
     "react": "^19.1.0",
