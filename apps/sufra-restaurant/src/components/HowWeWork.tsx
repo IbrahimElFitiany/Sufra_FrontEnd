@@ -1,3 +1,6 @@
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+
 function HowWeWork() {
   const steps = [
     {
@@ -22,24 +25,20 @@ function HowWeWork() {
     },
   ];
 
-  return (
-    <div className="px-6 py-20 bg-white text-[#2d2d2d] text-center">
-      <h2 className="text-4xl font-[InterMed] text-[#DBB28C] mb-12">
-        How We’ll Work Together
-      </h2>
+  const [ref, inView] = useInView();
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 max-w-7xl mx-auto">
-        {steps.map((step, index) => (
-          <div
-            key={index}
-            className="border border-[#DBB28C] bg-[#fffaf5] p-6 rounded-xl shadow-sm hover:shadow-md transition"
-          >
-            <h3 className="text-2xl font-semibold text-[#DBB28C] mb-4">
-              {step.title}
-            </h3>
-            <p className="text-lg leading-relaxed">{step.description}</p>
-          </div>
-        ))}
+  return (
+    <div id="whyPartnerWithUs" className="flex flex-col m-10 justify-center items-center text-5xl font-[Inter]">
+      <h1>How We <span className="text-gold-Muted">Work Together</span></h1>
+      <div id="WhyWorkWithUsCardContainer" className="grid md:grid-cols-4">
+        {steps.map((card,index)=>{
+          return (
+            <motion.div  className="bg-amber-400 m-10 md:mx-5 lg:m-10 p-4 flex flex-col justify-center items-center gap-y-2" key={index}>
+              <h1 className="text-3xl">{card.title}</h1>
+              <p className="text-xl">{}</p>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );

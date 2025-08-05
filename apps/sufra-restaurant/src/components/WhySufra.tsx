@@ -1,36 +1,62 @@
+import { easeIn, motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+
+const cards = [
+  {
+    title: "Reach More Customers",
+    text: "Thousands of hungry customers are nearby — Sufrá helps them find you and gets their food delivered fast.",
+  },
+  {
+    title: "Earn More Money",
+    text: "Serve more guests without adding more tables. We help you increase orders and ensure you're paid promptly.",
+  },
+  {
+    title: "Grow Your Business",
+    text: "From orders to reservations, Sufrá helps you drive growth, reach new diners, and scale with confidence.",
+  },
+];
+
 function WhySufra() {
+  const [ref, inView] = useInView();
+
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-16 bg-white text-[#2d2d2d] font-[InterMed] text-center">
-      {/* Section Title */}
-      <h1 className="text-5xl mb-16 text-[#DBB28C]">Why Sufrá</h1>
+    <section
+      id="whyPartnerWithUs"
+      ref={ref}
+      className=" py-20 px-8 flex flex-col items-center"
+    >
+      {/* Heading */}
+      <h1 className="flex items-center justify-center gap-4 text-4xl font-[caughe] text-white tracking-wide mb-16">
+        Why Partner with
+        <img
+          src="/sufraLogo.png"
+          alt="Sufra Logo"
+          className="h-10 object-contain"
+        />
+      </h1>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full max-w-7xl">
-        {/* Card 1 */}
-        <div className="border border-[#DBB28C] bg-[#fffaf5] p-6 rounded-xl shadow-sm hover:shadow-md transition">
-          <h2 className="text-3xl mb-4 text-[#DBB28C]">Reach more customers</h2>
-          <p className="text-lg leading-relaxed">
-            Thousands of hungry customers are nearby — Sufrá helps them find you and gets their food delivered fast.
-          </p>
-        </div>
-
-        {/* Card 2 */}
-        <div className="border border-[#DBB28C] bg-[#fffaf5] p-6 rounded-xl shadow-sm hover:shadow-md transition">
-          <h2 className="text-3xl mb-4 text-[#DBB28C]">Earn more money</h2>
-          <p className="text-lg leading-relaxed">
-            Serve more guests without adding more tables. We help you increase orders and ensure you're paid promptly.
-          </p>
-        </div>
-
-        {/* Card 3 */}
-        <div className="border border-[#DBB28C] bg-[#fffaf5] p-6 rounded-xl shadow-sm hover:shadow-md transition">
-          <h2 className="text-3xl mb-4 text-[#DBB28C]">Grow your business</h2>
-          <p className="text-lg leading-relaxed">
-            From orders to reservations, Sufrá helps you drive growth, reach new diners, and scale with confidence.
-          </p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full">
+        {cards.map((card, index) => (
+          <motion.div
+            key={index}
+            className="bg-[#061C1A] shadow-lg rounded-xl p-8 flex flex-col justify-between items-start text-white transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            initial={{ opacity: 0, y: 70 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{
+              duration: 0.8,
+              delay: index * 0.3,
+              ease: [0.33, 1, 0.68, 1] // <<< THIS is what gives smooth flow + soft landing
+            }} 
+            >
+            <h2 className="text-2xl font-[caughe] mb-4">{card.title}</h2>
+            <p className="text-base font-[Inter] leading-relaxed">
+              {card.text}
+            </p>
+          </motion.div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 }
 
