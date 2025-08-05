@@ -25,8 +25,8 @@ function WhySufra() {
       ref={ref}
       className=" py-20 px-8 flex flex-col items-center"
     >
-      {/* Heading */}
-      <h1 className="flex items-center justify-center gap-4 text-4xl font-[caughe] text-white tracking-wide mb-16">
+      
+      <h1 className="flex items-center justify-center gap-4 text-4xl font-[caughe] text-[#2D2D2D] tracking-wide mb-16">
         Why Partner with
         <img
           src="/sufraLogo.png"
@@ -35,21 +35,20 @@ function WhySufra() {
         />
       </h1>
 
-      {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full">
         {cards.map((card, index) => (
           <motion.div
             key={index}
-            className="bg-[#061C1A] shadow-lg rounded-xl p-8 flex flex-col justify-between items-start text-white transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            className="bg-[#061C1A] shadow-lg rounded-xl p-8 flex flex-col justify-between items-start text-[#C89F64] transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
             initial={{ opacity: 0, y: 70 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{
               duration: 0.8,
               delay: index * 0.3,
-              ease: [0.33, 1, 0.68, 1] // <<< THIS is what gives smooth flow + soft landing
+              ease: [0.33, 1, 0.68, 1]
             }} 
             >
-            <h2 className="text-2xl font-[caughe] mb-4">{card.title}</h2>
+            <h2 className=" text-white text-2xl font-[caughe] mb-4">{card.title}</h2>
             <p className="text-base font-[Inter] leading-relaxed">
               {card.text}
             </p>
