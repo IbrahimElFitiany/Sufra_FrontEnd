@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function LandingHero() {
   return (
@@ -53,9 +54,9 @@ function LandingHero() {
             }} className="text-[#B68D67] text-2xl mt-4 font-[caughe] text-center w-[40%]">Join the luxury food network connecting exclusive restaurants with premium customers.
         </motion.p>
 
-        <button className="absolute bottom-10 left-1/2 -translate-x-1/2 px-8 py-3 bg-[#B68D67] text-white font-[caughe] text-xl  rounded-full shadow-lg hover:brightness-110 hover:scale-102 transition duration-300">
+        <Link to={"/register"} className="absolute bottom-10 left-1/2 -translate-x-1/2 px-8 py-3 bg-[#B68D67] text-white font-[caughe] text-xl  rounded-full shadow-lg hover:brightness-110 hover:scale-102 transition duration-300">
           Join Us
-        </button>
+        </Link>
       </div>
     </div>
   )
