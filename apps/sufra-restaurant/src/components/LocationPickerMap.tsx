@@ -1,139 +1,81 @@
-// components/LocationPickerMap.tsx
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
-import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
-import 'leaflet/dist/leaflet.css';
-import 'leaflet-geosearch/dist/geosearch.css';
-import L from 'leaflet';
+import { useEffect, useRef } from 'react';
+import mapboxgl from 'mapbox-gl';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import type { Location } from '@/types/Location';
 
-// Type declarations for leaflet-geosearch
-declare module 'leaflet-geosearch' {
-  interface OpenStreetMapProviderParams {
-    viewbox?: string;
-    bounded?: number;
-  }
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-  interface OpenStreetMapProvider {
-    constructor(options?: { params?: OpenStreetMapProviderParams }): OpenStreetMapProvider;
-  }
-
-  interface GeoSearchControlOptions {
-    provider: any;
-    style?: string;
-    showMarker?: boolean;
-    showPopup?: boolean;
-    autoClose?: boolean;
-    retainZoomLevel?: boolean;
-    animateZoom?: boolean;
-    keepResult?: boolean;
-  }
-
-  class GeoSearchControl extends L.Control {
-    constructor(options: GeoSearchControlOptions);
-  }
-}
-
-interface Location {
-  lat: number;
-  lng: number;
-}
-
-interface MapClickHandlerProps {
-  setLocation: (location: Location) => void;
-}
-
-interface SearchControlProps {
-  setLocation: (location: Location) => void;
-}
-
-interface LocationPickerMapProps {
+interface Props {
   location: Location;
-  setLocation: (location: Location) => void;
+  setLocation: (loc:Location) => void;
 }
 
-function MapClickHandler({ setLocation }: MapClickHandlerProps) {
-  useMapEvents({
-    click(event: L.LeafletMouseEvent) {
-      const { lat, lng } = event.latlng;
-      setLocation({ lat, lng });
-    },
-  });
-  return null;
-}
-
-function SearchControl({ setLocation }: SearchControlProps) {
-  const map = useMap();
+function LocationPickerMap ({location, setLocation }: Props) {
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const markerRef = useRef<mapboxgl.Marker | null>(null);
 
   useEffect(() => {
-    const provider = new OpenStreetMapProvider({
-      params: {
-        viewbox: '24.696,31.667,36.866,21.999',
-        bounded: 4
-      }
+    if (!mapContainer.current) return;
+
+    const map = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [location.lng, location.lat],
+      zoom: 9,
     });
 
-    const searchControl = new GeoSearchControl({
-      provider,
-      style: 'bar',
-      showMarker: false,
-      showPopup: false,
-      autoClose: true,
-      retainZoomLevel: false,
-      animateZoom: true,
-      keepResult: true,
+    mapRef.current = map;
+
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken!,
+      marker: false,
     });
 
-    map.addControl(searchControl);
+    map.on('load', () => {
+      map.addControl(geocoder as any, 'top');
+    });
 
-    interface GeoSearchResultEvent extends L.LeafletEvent {
-      location: {
-        y: number;
-        x: number;
-        label: string;
-        bounds: L.LatLngBounds;
-      };
-    }
-
-    const handleSearchResult = (event: GeoSearchResultEvent) => {
-      const lat = event.location.y;
-      const lng = event.location.x;
+    geocoder.on('result', (e) => {
+      const coords = e.result.center;
+      if (!coords) return;
+      const [lng, lat] = coords;
       setLocation({ lat, lng });
-      map.setView([lat, lng], 15);
+      placeMarker({ lat, lng });
+      map.flyTo({ center:[lng, lat],speed: 3, zoom: 12 });
+    });
+
+    map.on('click', (e) => {
+      const { lng, lat } = e.lngLat;
+      setLocation({ lat, lng });
+      placeMarker({ lat, lng });
+    });
+
+    const placeMarker = ({ lat, lng }:Location) => {
+      if (markerRef.current) {
+        markerRef.current.setLngLat([lng, lat]);
+      } 
+      else {
+        markerRef.current = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+      }
     };
 
-    map.on('geosearch/showlocation', handleSearchResult as L.LeafletEventHandlerFn);
+    placeMarker(location);
 
-    return () => {
-      map.off('geosearch/showlocation', handleSearchResult as L.LeafletEventHandlerFn);
-      map.removeControl(searchControl);
-    };
-  }, [map, setLocation]);
+    return () => map.remove();
+  }, []);
 
-  return null;
-}
-
-const LocationPickerMap = ({ location, setLocation }: LocationPickerMapProps) => {
   return (
-    <MapContainer 
-      center={location} 
-      zoom={13} 
-      style={{ height: '100%', width: '100%' }} 
-      maxBounds={[[21.999, 24.696], [31.667, 36.866]]} 
-      maxBoundsViscosity={1.0}
-    >      
-      <TileLayer 
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    <div className="w-full h-[400px] relative">
+      <div
+        ref={mapContainer}
+        className="w-full h-full"
+        style={{ position: 'relative', zIndex: 0 }}
       />
-      <SearchControl setLocation={setLocation} />
-      <MapClickHandler setLocation={setLocation} />
-      <Marker position={location}>
-        <Popup>
-          Latitude: {location.lat.toFixed(4)}, Longitude: {location.lng.toFixed(4)}
-        </Popup>
-      </Marker>
-    </MapContainer>
+    </div>
   );
-};
+}
 
 export default LocationPickerMap;
