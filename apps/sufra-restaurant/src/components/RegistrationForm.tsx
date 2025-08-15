@@ -1,7 +1,7 @@
 import {useForm} from 'react-hook-form'
 import type { RestaurantRegistration } from '@/types/RestaurantRegisteration'
 import type { Location } from '@/types/Location';
-import { register as registerService } from '@services/AuthServices';
+import { register as registerService } from '@services/authServices';
 import LocationPickerMap from './LocationPickerMap';
 import { useState,useEffect } from 'react';
 

@@ -1,28 +1,37 @@
 import { useState} from "react";
 import { Link } from "react-router-dom";
 import type { OrderTrend } from "@/types/OrderTrend";
-import { getOrderTrend } from "@services/OrderServices";
+import { getOrderTrend } from "@services/orderServices";
 import type { TrendPeriod } from "@/types/TrendPeriod";
 import { useQuery } from "@tanstack/react-query";
 import OrdersTrendCardSkeleton from '@components/dashboard/OrdersTrendCardSkeleton'
 
 
-function OrdersTrendCard() {
+function ReservationsTrendCard() {
   const [period, setPeriod] = useState<TrendPeriod>('day');
 
-  const { data: ordersCount, error, isLoading} = useQuery<OrderTrend, Error>({
+  const { data: ordersCount, error, isLoading, refetch } = useQuery<OrderTrend, Error>({
     queryKey:["ordersTrend", period],
-    queryFn:() => getOrderTrend(period)
+    queryFn:() => getOrderTrend(period),
+    retry: 2,
   });
 
   if (isLoading) return <OrdersTrendCardSkeleton/>;
-  if (error) return <div className="text-red-500">Error: {error.message}</div>;
+  if (error)
+    return (
+      <div className="flex flex-col justify-center items-center font-[Inter] border-1 border-[#ffffff25] drop-shadow-md text-white bg-[linear-gradient(119deg,#162A21,#1B3429)] p-5 rounded-3xl min-h-[220px] text-center font-semibold">
+        <p className="text-red-400 mb-4">Something went wrong.</p>
+        <button onClick={() => refetch()} className="bg-[#FFC991] text-[#1B3429] px-4 py-2 rounded-full hover:scale-110 hover:brightness-105 transition duration-300 font-semibold">
+          Retry
+        </button>
+      </div>
+    );
   if (!ordersCount) return null;
 
   return (
-    <div className="flex flex-col font-[Inter] text-white bg-[linear-gradient(119deg,#162A21,#1B3429)] p-5 rounded-3xl ">
+    <div className="flex flex-col font-[Inter] border-1 border-[#ffffff25] drop-shadow-md text-white bg-[linear-gradient(119deg,#162A21,#1B3429)] p-5 rounded-3xl ">
 
-      <div id="upper-section" className="flex justify-between text-2xl font-extrabold">
+      <div id="upper-section" className="flex justify-between text-2xl font-bold">
         <h1>Orders trend</h1>
         <Link 
           className="
@@ -30,14 +39,14 @@ function OrdersTrendCard() {
           size-10 bg-[#FFC991]
           rounded-full hover:scale-110 
           hover:brightness-105 transition duration-300" 
-          to={"/order"}
+          to={"/orders"}
           title="Go to Orders"
           >
           <img src="/Arrow.png" alt="" />
         </Link>
       </div>
 
-      <div id="TodaysOrderCount" className="font-extrabold text-6xl">{ordersCount.current}</div>
+      <div id="TodaysOrderCount" className="font-bold mt-2 text-5xl">{ordersCount.current}</div>
 
       <div id="bottom-section" className="flex justify-between mt-7 gap-2 text-xs font-medium">
           
@@ -73,4 +82,4 @@ const periods: { label: string; value: TrendPeriod }[] = [
   { label: 'W', value: 'week' },
   { label: 'M', value: 'month' }
 ];
-export default OrdersTrendCard;
+export default ReservationsTrendCard;
