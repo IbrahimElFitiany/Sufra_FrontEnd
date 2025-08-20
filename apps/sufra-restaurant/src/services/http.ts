@@ -1,6 +1,9 @@
 import axios, { AxiosError} from "axios";
 import type { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios"; 
+import { logout, refreshAccessToken } from "./authServices";
 
+
+//create axios instance
 const http: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {"Content-Type": "application/json",},
@@ -8,31 +11,29 @@ const http: AxiosInstance = axios.create({
 });
 
 
-http.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-
+//faildRequest Type which has 2 funs 
 type FailedRequest = {
-  resolve: (token: string) => void;
-  reject: (err: any) => void;
+  resolve: (value?: unknown) => void;
+  reject: (error: any) => void;
 };
 
+//to check if I'm already refreshing 
 let isRefreshing = false;
+
+//queue to store failed requests 
 let failedQueue: FailedRequest[] = [];
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
+
+//function to process failed queue
+const processQueue = (error: any) => {
+  failedQueue.forEach(({ resolve, reject }) => {
     if (error) {
-      prom.reject(error);
+      reject(error);
     } else {
-      prom.resolve(token!);
+      resolve();
     }
   });
 
+  //empty the queue
   failedQueue = [];
 };
 
@@ -51,19 +52,9 @@ http.interceptors.response.use((response: AxiosResponse) => response, async (err
       if (isRefreshing) {
         // If a refresh token request is already in progress, queue this request
         return new Promise((resolve, reject) => {
-
-          failedQueue.push({
-            resolve: (token: string) => {
-              originalRequest.headers = {
-                ...originalRequest.headers,
-                Authorization: `Bearer ${token}`,
-              };
-              resolve(http(originalRequest));
-            },
-            reject: (err) => {
-              reject(err);
-            },
-          });
+          failedQueue.push({ resolve, reject });
+        }).then(() => {
+          return http(originalRequest);
         });
       }
 
@@ -72,20 +63,8 @@ http.interceptors.response.use((response: AxiosResponse) => response, async (err
       isRefreshing = true; 
 
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
-          {},
-          { withCredentials: true } //for sending cookies
-        );
-
-        const newAccessToken = response.data.accessToken;
-        localStorage.setItem("accessToken", newAccessToken);
-        processQueue(null, newAccessToken);
-
-        originalRequest.headers = {
-          ...originalRequest.headers,
-          Authorization: `Bearer ${newAccessToken}`,
-        };
+        await refreshAccessToken();
+        processQueue(null);
 
         return http(originalRequest);
       } 
@@ -93,9 +72,8 @@ http.interceptors.response.use((response: AxiosResponse) => response, async (err
         //if refreshing token failed, I will reject all the requests in the queue
         //and remove the access token from local storage
         //and call the logout function
-        localStorage.removeItem("accessToken");
-        processQueue(refreshError, null);
-        http.post("/auth/logout")
+        processQueue(refreshError);
+        await logout()
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -104,14 +82,6 @@ http.interceptors.response.use((response: AxiosResponse) => response, async (err
     return Promise.reject(error);
   }
 );
-
-
-
-
-
-
-
-
 
 
 export default http;

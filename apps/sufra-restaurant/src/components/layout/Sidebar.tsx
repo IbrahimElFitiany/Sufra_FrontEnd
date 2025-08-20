@@ -1,7 +1,7 @@
-import { NavLink } from "react-router-dom";
-import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { DashboardIcon, OrdersIcon, TablesIcon, OpeningHoursIcon, ReviewsIcon, MenuIcon, ReservationIcon, SettingsIcon, LogoutIcon} from "../../../icons";
-import type { Manager } from "@/types/Manager";
+import { useManagerStore } from "@/stores/authStore";
+import { logout } from "@services/authServices";
 
 type SidebarLinkProps = {
   to: string;
@@ -17,7 +17,7 @@ const links: SidebarLinkProps[] = [
   { to: "/opening-hours", label: "Opening Hours", icon: <OpeningHoursIcon/> },
   { to: "/reviews", label: "Reviews", icon: <ReviewsIcon/> },
   { to: "/menus", label: "Menu Management", icon: <MenuIcon/> },
-  { to: "/help-settings", label: "Settings", icon: <SettingsIcon/> },
+  { to: "/settings", label: "Settings", icon: <SettingsIcon/> },
 ];
 
 function SidebarLink({ to, label, icon }: SidebarLinkProps) {
@@ -28,13 +28,17 @@ function SidebarLink({ to, label, icon }: SidebarLinkProps) {
   );
 }
 
-type SidebarProps = {
-  user: Pick<Manager, "fname" | "lname" | "email">;
-};
-
-function Sidebar({user}: SidebarProps) {
-  const initials = `${user.fname[0]}${user.lname[0]}`.toUpperCase();
-  const fullName = `${user.fname} ${user.lname}`;
+function Sidebar() {
+  const {manager,clearManager} = useManagerStore.getState()
+  const navigate = useNavigate();
+  const initials = `${manager!.fname[0]}${manager!.lname[0]}`.toUpperCase();
+  const fullName = `${manager!.fname} ${manager!.lname}`;
+  
+  const handleLogout = async () => {
+    await logout();
+    clearManager();
+    navigate('/');
+  };
 
   return (
     <aside id="Sidebar" className="flex flex-col justify-between items-center mr-3 w-13 lg:w-[15%] h-full p-1 lg:p-4 gap-y-8 rounded-2xl bg-[#061C1A] drop-shadow-md border-1 border-[#ffffff21] font-[Inter] text-[#fff]">
@@ -57,11 +61,11 @@ function Sidebar({user}: SidebarProps) {
           </div>
           <div className="hidden lg:flex flex-col">
             <span className="text-white font-semibold text-sm">{fullName}</span>
-            <span className="text-gray-400 text-xs">{user.email}</span>
+            <span className="text-gray-400 text-xs">{manager!.email}</span>
           </div>
         </div>
 
-        <button id="logout" className="cursor-pointer hidden lg:flex ml-6 mt-2 items-center h-full w-[10%] text-[#99A1AF] hover:text-[#ebebeb] duration-300"> 
+        <button onClick={handleLogout} id="logout" className="cursor-pointer hidden lg:flex ml-6 mt-2 items-center h-full w-[10%] text-[#99A1AF] hover:text-[#ebebeb] duration-300"> 
           <LogoutIcon size={27}/>
         </button>
       </div>

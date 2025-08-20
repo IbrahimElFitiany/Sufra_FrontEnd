@@ -5,5 +5,4 @@ export type Manager = {
   email: string;
   restaurantId: number;
   restaurantName: string;
-  isApproved: boolean;
 }

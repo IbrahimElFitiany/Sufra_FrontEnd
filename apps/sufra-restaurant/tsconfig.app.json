@@ -16,6 +16,7 @@
       "@routes/*": ["src/routes/*"],
       "@services/*": ["src/services/*"],
       "@/types/*": ["src/types/*"],
+      "@/stores/*":["src/stores/*"],
       "@utils/*": ["src/utils/*"],
     },
     /* Bundler mode */
